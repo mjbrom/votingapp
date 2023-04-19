@@ -2,25 +2,32 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-// import displayList from "./teaminfo.json";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardActions from "@mui/material/CardActions";
 import IconButton from "@mui/material/IconButton";
 import { ref, get, child, update } from "firebase/database";
 import { database } from "./firebase";
-
+import axios from "axios";
 function App() {
   const [numVotes, setNumVotes] = useState(3);
   const [topThree, setTopThree] = useState([]);
   const [displayList, setDisplayList] = useState([]);
-
+  const [ipDetails, setIpDetails] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       const data = await getTeams();
       setDisplayList(data);
     };
+    const getIPv6 = function (req, res, next) {
+      axios.get("https://ipapi.co/json/").then((res) => {
+        setIpDetails(res.data);
+        console.log(res.data);
+      });
+    };
+
     fetchData();
+    getIPv6();
   }, []);
 
   const getTeams = async () => {
@@ -127,7 +134,7 @@ function App() {
                         margin: "20px",
                       }}
                     >
-                      <Card  id='cardProjectFinal' sx={{ maxWidth: 345 }}>
+                      <Card id="cardProjectFinal" sx={{ maxWidth: 345 }}>
                         <CardHeader title={team.name} />
                         <CardActions disableSpacing>
                           <IconButton
@@ -150,14 +157,21 @@ function App() {
     return (
       <div className="App">
         <div className="titleHeader">
-          <h1 id='title' style={{ color: "white" }}>Modern Marvels Voting</h1>
-          <h2 id='sponsortitle' style={{ color: "white" }}>Sponsored by NFTicket</h2>
+          <h1 id="title" style={{ color: "white" }}>
+            Modern Marvels Voting
+          </h1>
+          <h2 id="sponsortitle" style={{ color: "white" }}>
+            Sponsored by NFTicket
+          </h2>
         </div>
-        <h2 id='aboutSection' > Vote for the top 3 projects. The first vote is worth 3 points, 
-                              the second is worth 2 points, and the third is worth 1 point.</h2>
-        
-        <h1 id="votesRemaining" >Votes Remaining: {numVotes} </h1>
-        
+        <h2 id="aboutSection">
+          {" "}
+          Vote for the top 3 projects. The first vote is worth 3 points, the
+          second is worth 2 points, and the third is worth 1 point.
+        </h2>
+
+        <h1 id="votesRemaining">Votes Remaining: {numVotes} </h1>
+
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}></Box>
         <Box
           style={{
@@ -179,7 +193,7 @@ function App() {
                         }}
                         key={team.id}
                       >
-                        <Card id='cardProject' sx={{ maxWidth: 345 }}>
+                        <Card id="cardProject" sx={{ maxWidth: 345 }}>
                           <CardHeader title={team.name} />
                           <CardActions disableSpacing>
                             <IconButton

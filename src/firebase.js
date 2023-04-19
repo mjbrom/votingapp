@@ -1,22 +1,3 @@
-// import { initializeApp } from "firebase/app";
-// import { getDatabase } from "firebase/database";
-
-// const firebaseConfig = {
-//   apiKey: "AIzaSyAHmsz2c_w4JtNTK0eiEhm5EWVTS1LZddM",
-//   authDomain: "voting-app-e4d09.firebaseapp.com",
-//   databaseURL: "https://voting-app-e4d09-default-rtdb.firebaseio.com",
-//   projectId: "voting-app-e4d09",
-//   storageBucket: "voting-app-e4d09.appspot.com",
-//   messagingSenderId: "393351105717",
-//   appId: "1:393351105717:web:f55667960060e02de742fc",
-//   measurementId: "G-13BC52ZFEN",
-// };
-
-// const firebase = initializeApp(firebaseConfig);
-// const database = getDatabase(firebase);
-
-// export { database, firebase };
-
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getDatabase } from "firebase/database";
