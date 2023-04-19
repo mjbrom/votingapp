@@ -24,6 +24,51 @@
   color: white;
 }
 
+.titleHeader{
+  background-color: #282c34;
+  min-height: 10vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'times new roman';
+  color: white;
+  margin-bottom: 0;
+}
+
+#sponsortitle{
+  font-size: 20px;
+  font-family: 'times new roman';
+  color: white;
+}
+
+#aboutSection{
+  background-color: #972224;
+  opacity: 0.8;
+  min-height: 8vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'times new roman';
+  color: white;
+  font-size: 20px;
+  font-family: 'times new roman';
+}
+
+#title{
+  font-size: calc(50px + 2vmin);
+  font-family: 'times new roman';
+  color: white;
+  margin-bottom: 0;
+}
+
+#votesRemaining{
+  font-size: calc(20px + 2vmin);
+  font-family: 'times new roman';
+  color: red;
+}
+
 .App-link {
   color: #61dafb;
 }

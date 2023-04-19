@@ -149,11 +149,15 @@ function App() {
   } else {
     return (
       <div className="App">
-        <h1>You Have {numVotes} Votes Remaining</h1>
-        <h3>
-          Your first vote is worth 3 points, the second is worth 2, and your
-          last is worth 1
-        </h3>
+        <div className="titleHeader">
+          <h1 id='title' style={{ color: "white" }}>Modern Marvels Voting</h1>
+          <h2 id='sponsortitle' style={{ color: "white" }}>Sponsored by NFTicket</h2>
+        </div>
+        <h2 id='aboutSection' > Vote for the top 3 projects. The first vote is worth 3 points, 
+                              the second is worth 2 points, and the third is worth 1 point.</h2>
+        
+        <h1 id="votesRemaining" >Votes Remaining: {numVotes} </h1>
+        
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}></Box>
         <Box
           style={{
