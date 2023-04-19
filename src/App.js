@@ -105,7 +105,7 @@ function App() {
     console.log(topThree);
 
     return (
-      <div className="App">
+      <div className="App-header">
         <h1>Thank you for voting!</h1>
         <h3>Here are the top 3 projects right now</h3>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}></Box>
@@ -127,7 +127,7 @@ function App() {
                         margin: "20px",
                       }}
                     >
-                      <Card sx={{ maxWidth: 345 }}>
+                      <Card  id='cardProjectFinal' sx={{ maxWidth: 345 }}>
                         <CardHeader title={team.name} />
                         <CardActions disableSpacing>
                           <IconButton
@@ -179,7 +179,7 @@ function App() {
                         }}
                         key={team.id}
                       >
-                        <Card sx={{ maxWidth: 345 }}>
+                        <Card id='cardProject' sx={{ maxWidth: 345 }}>
                           <CardHeader title={team.name} />
                           <CardActions disableSpacing>
                             <IconButton
