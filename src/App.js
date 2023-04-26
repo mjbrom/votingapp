@@ -9,11 +9,13 @@ import IconButton from "@mui/material/IconButton";
 import { ref, get, child, update } from "firebase/database";
 import { database } from "./firebase";
 import axios from "axios";
+
 function App() {
   const [numVotes, setNumVotes] = useState(3);
   const [topThree, setTopThree] = useState([]);
   const [displayList, setDisplayList] = useState([]);
   const [ipDetails, setIpDetails] = useState([]);
+
   useEffect(() => {
     const fetchData = async () => {
       const data = await getTeams();
@@ -33,7 +35,7 @@ function App() {
   const getTeams = async () => {
     const teams = [];
     const dbRef = ref(database);
-    for (let i = 1; i < 5; i++) {
+    for (let i = 1; i < 19; i++) {
       await get(child(dbRef, `teamInfo/${i}`)).then((snapshot) => {
         if (snapshot.exists()) {
           teams.push(snapshot.val());
