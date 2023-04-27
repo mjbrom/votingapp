@@ -6,15 +6,17 @@ import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardActions from "@mui/material/CardActions";
 import IconButton from "@mui/material/IconButton";
-import { ref, get, child, update } from "firebase/database";
+import { ref, get, child, update, set } from "firebase/database";
 import { database } from "./firebase";
 import axios from "axios";
+import { Button } from "@mui/material";
 
 function App() {
   const [numVotes, setNumVotes] = useState(3);
   const [topThree, setTopThree] = useState([]);
   const [displayList, setDisplayList] = useState([]);
   const [ipDetails, setIpDetails] = useState([]);
+  const [submitClicked, setSubmitClicked] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,8 +24,12 @@ function App() {
       setDisplayList(data);
     };
     const getIPv6 = function (req, res, next) {
-      axios.get("https://ipapi.co/json/").then((res) => {
-        setIpDetails(res.data);
+      axios.get("https://ipapi.co/json/").then(async (res) => {
+        // setIpDetails(res.data);
+        const dbRef = ref(database, "ipStorage/" + res.data.ip);
+        set(dbRef, {
+          ipVal: res.data.ip,
+        });
         console.log(res.data);
       });
     };
@@ -35,6 +41,14 @@ function App() {
   const getTeams = async () => {
     const teams = [];
     const dbRef = ref(database);
+    await get(child(dbRef, `ipStorage`)).then((snapshot) => {
+      if (snapshot.exists()) {
+        setIpDetails(snapshot.val());
+        console.log(snapshot.val());
+      } else {
+        console.log("No Data");
+      }
+    });
     for (let i = 1; i < 19; i++) {
       await get(child(dbRef, `teamInfo/${i}`)).then((snapshot) => {
         if (snapshot.exists()) {
@@ -48,28 +62,46 @@ function App() {
     return teams;
   };
 
-  const handleVote = async (e) => {
+  const handleSubmit = async (e) => {
+    setSubmitClicked(true);
     const dbRef = ref(database);
     const updates = {};
-    let newList = JSON.parse(JSON.stringify(displayList));
-    console.log(newList);
-    newList.map(async (team) => {
-      if (team.id == e.target.id) {
-        if (numVotes === 1) {
-          team.votes += 1;
-        } else {
-          team.votes += numVotes;
-        }
-        updates[`teamInfo/${team.id}/votes`] = team.votes;
-        await update(dbRef, updates);
-
-        e.target.disabled = true;
-      }
+    displayList.map(async (team) => {
+      updates[`teamInfo/${team.id}/votes`] = team.votes;
+      await update(dbRef, updates);
     });
-    setDisplayList(newList);
-    setNumVotes(numVotes - 1);
-    if (numVotes === 1) {
-      setTopThree(getTopThree(newList));
+    setTopThree(getTopThree(displayList));
+  };
+
+  const handleVote = async (e) => {
+    if (numVotes > 0 || e.target.innerText === "Unvote") {
+      let newList = JSON.parse(JSON.stringify(displayList));
+      console.log(newList);
+      newList.map(async (team) => {
+        if (team.id == e.target.id) {
+          if (e.target.innerText === "Unvote") {
+            team.votes -= 1;
+            setNumVotes(numVotes + 1);
+            e.target.innerText = "Vote";
+          } else {
+            team.votes += 1;
+            setNumVotes(numVotes - 1);
+            e.target.innerText = "Unvote";
+          }
+          // if (numVotes === 1) {
+          //   team.votes += 1;
+          // } else {
+          //   team.votes += numVotes;
+          // }
+          // updates[`teamInfo/${team.id}/votes`] = team.votes;
+          // await update(dbRef, updates);
+        }
+      });
+      setDisplayList(newList);
+
+      // if (numVotes === 1) {
+      //   setTopThree(getTopThree(newList));
+      // }
     }
   };
 
@@ -110,7 +142,7 @@ function App() {
       { name: thirdName, votes: third },
     ];
   };
-  if (numVotes === 0) {
+  if (submitClicked === true) {
     console.log(topThree);
 
     return (
@@ -168,11 +200,13 @@ function App() {
         </div>
         <h2 id="aboutSection">
           {" "}
-          Vote for the top 3 projects. The first vote is worth 3 points, the
-          second is worth 2 points, and the third is worth 1 point.
+          Vote for the top 3 projects and then hit Submit. Each vote is worth 1
+          point.
         </h2>
 
-        <h1 id="votesRemaining">Votes Remaining: {numVotes} </h1>
+        <h1 id="votesRemaining">
+          Votes Remaining: {numVotes ? numVotes : "0"}{" "}
+        </h1>
 
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}></Box>
         <Box
@@ -200,7 +234,7 @@ function App() {
                           <CardActions disableSpacing>
                             <IconButton
                               id={team.id}
-                              disabled={numVotes === 0}
+                              // disabled={numVotes === 0}
                               aria-label="Vote"
                               onClick={(e) => handleVote(e)}
                             >
@@ -214,6 +248,13 @@ function App() {
                 })}
           </Grid>
         </Box>
+        <Button
+          // disabled={numVotes !== 0}
+          variant="contained"
+          onClick={() => handleSubmit()}
+        >
+          Submit
+        </Button>
       </div>
     );
   }
