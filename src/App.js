@@ -10,6 +10,7 @@ import { ref, get, child, update, set } from "firebase/database";
 import { database } from "./firebase";
 import axios from "axios";
 import { Button } from "@mui/material";
+import Typography from "@mui/material/Typography";
 
 function App() {
   const [numVotes, setNumVotes] = useState(3);
@@ -202,7 +203,7 @@ function App() {
                         }}
                       >
                         <Card id="cardProjectFinal" sx={{ maxWidth: 345 }}>
-                          <CardHeader title={team.name} />
+                          <CardHeader title={team.projName} />
                           <CardActions disableSpacing>
                             <IconButton
                               disabled={true}
@@ -263,7 +264,20 @@ function App() {
                           key={team.id}
                         >
                           <Card id="cardProject" sx={{ maxWidth: 345 }}>
-                            <CardHeader title={team.name} />
+                            {/* <Typography
+                              sx={{ fontSize: 14, color: "white" }}
+                              color="text.secondary"
+                              gutterBottom
+                            >
+                              {team.name}
+                            </Typography> */}
+                            <CardHeader title={team.projName} />
+                            <Typography
+                              sx={{ mb: 1.5, color: "white" }}
+                              color="text.secondary"
+                            >
+                              {team.members}
+                            </Typography>
                             <CardActions disableSpacing>
                               <IconButton
                                 id={team.id}
