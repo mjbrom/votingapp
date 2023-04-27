@@ -26,7 +26,13 @@ function App() {
     const getIPv6 = function (req, res, next) {
       axios.get("https://ipapi.co/json/").then(async (res) => {
         // setIpDetails(res.data);
-        const dbRef = ref(database, "ipStorage/" + res.data.ip);
+        let newIP = res.data.ip;
+        newIP = newIP.split(".").join("");
+        newIP = newIP.split("#").join("");
+        newIP = newIP.split("$").join("");
+        newIP = newIP.split("[").join("");
+        newIP = newIP.split("]").join("");
+        const dbRef = ref(database, "ipStorage/" + newIP);
         set(dbRef, {
           ipVal: res.data.ip,
         });
