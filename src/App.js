@@ -15,46 +15,62 @@ function App() {
   const [numVotes, setNumVotes] = useState(3);
   const [topThree, setTopThree] = useState([]);
   const [displayList, setDisplayList] = useState([]);
-  const [ipDetails, setIpDetails] = useState([]);
   const [submitClicked, setSubmitClicked] = useState(false);
+  const [hasVoted, setHasVoted] = useState(false);
+  const [ipDetails, setIpDetails] = useState("");
+  const [rawIP, setRawIP] = useState("");
 
   useEffect(() => {
+    const getUsedIP = async () => {
+      const dbRef = ref(database);
+      let result;
+      await get(child(dbRef, `ipStorage`)).then((snapshot) => {
+        if (snapshot.exists()) {
+          console.log(snapshot.val());
+          result = snapshot.val();
+        } else {
+          console.log("No Data");
+        }
+      });
+      console.log(result);
+      return result;
+    };
     const fetchData = async () => {
       const data = await getTeams();
       setDisplayList(data);
     };
-    const getIPv6 = function (req, res, next) {
+    const getIPv6 = async function (req, res, next) {
       axios.get("https://ipapi.co/json/").then(async (res) => {
-        // setIpDetails(res.data);
+        let ipList = await getUsedIP();
+        console.log(ipList);
+        setRawIP(res.data.ip);
         let newIP = res.data.ip;
         newIP = newIP.split(".").join("");
         newIP = newIP.split("#").join("");
         newIP = newIP.split("$").join("");
         newIP = newIP.split("[").join("");
         newIP = newIP.split("]").join("");
-        const dbRef = ref(database, "ipStorage/" + newIP);
-        set(dbRef, {
-          ipVal: res.data.ip,
-        });
+        for (const val in ipList) {
+          if (val === res.data.ip) {
+            setHasVoted(true);
+          }
+        }
+        setIpDetails(newIP);
+        // const dbRef = ref(database, "ipStorage/" + newIP);
+        // set(dbRef, {
+        //   ipVal: res.data.ip,
+        // });
         console.log(res.data);
       });
     };
-
-    fetchData();
+    // getUsedIP();
     getIPv6();
+    fetchData();
   }, []);
 
   const getTeams = async () => {
     const teams = [];
     const dbRef = ref(database);
-    await get(child(dbRef, `ipStorage`)).then((snapshot) => {
-      if (snapshot.exists()) {
-        setIpDetails(snapshot.val());
-        console.log(snapshot.val());
-      } else {
-        console.log("No Data");
-      }
-    });
     for (let i = 1; i < 19; i++) {
       await get(child(dbRef, `teamInfo/${i}`)).then((snapshot) => {
         if (snapshot.exists()) {
@@ -72,6 +88,10 @@ function App() {
     setSubmitClicked(true);
     const dbRef = ref(database);
     const updates = {};
+    const ipDbRef = ref(database, "ipStorage/" + ipDetails);
+    set(ipDbRef, {
+      ipVal: rawIP,
+    });
     displayList.map(async (team) => {
       updates[`teamInfo/${team.id}/votes`] = team.votes;
       await update(dbRef, updates);
@@ -148,121 +168,129 @@ function App() {
       { name: thirdName, votes: third },
     ];
   };
-  if (submitClicked === true) {
-    console.log(topThree);
-
+  if (hasVoted === true) {
     return (
-      <div className="App-header">
-        <h1>Thank you for voting!</h1>
-        <h3>Here are the top 3 projects right now</h3>
-        <Box sx={{ borderBottom: 1, borderColor: "divider" }}></Box>
-        <Box
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            margin: "50px",
-          }}
-        >
-          <Grid container spacing={4}>
-            {!topThree?.length
-              ? "No Teams available at this time"
-              : topThree.map((team) => {
-                  return (
-                    <div
-                      style={{
-                        display: "flex",
-                        margin: "20px",
-                      }}
-                    >
-                      <Card id="cardProjectFinal" sx={{ maxWidth: 345 }}>
-                        <CardHeader title={team.name} />
-                        <CardActions disableSpacing>
-                          <IconButton
-                            disabled={true}
-                            aria-label="Vote"
-                            onClick={(e) => handleVote(e)}
-                          >
-                            Votes: {team.votes}
-                          </IconButton>
-                        </CardActions>
-                      </Card>
-                    </div>
-                  );
-                })}
-          </Grid>
-        </Box>
+      <div>
+        <h1>You have already voted!</h1>
       </div>
     );
   } else {
-    return (
-      <div className="App">
-        <div className="titleHeader">
-          <h1 id="title" style={{ color: "white" }}>
-            Modern Marvels Voting
-          </h1>
-          <h2 id="sponsortitle" style={{ color: "white" }}>
-            Sponsored by NFTicket
-          </h2>
-        </div>
-        <h2 id="aboutSection">
-          {" "}
-          Vote for the top 3 projects and then hit Submit. Each vote is worth 1
-          point.
-        </h2>
+    if (submitClicked === true) {
+      console.log(topThree);
 
-        <h1 id="votesRemaining">
-          Votes Remaining: {numVotes ? numVotes : "0"}{" "}
-        </h1>
-
-        <Box sx={{ borderBottom: 1, borderColor: "divider" }}></Box>
-        <Box
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            margin: "50px",
-          }}
-        >
-          <Grid container spacing={4}>
-            {!displayList?.length
-              ? "No Teams available at this time"
-              : displayList.map((team) => {
-                  if (team !== null) {
+      return (
+        <div className="App-header">
+          <h1>Thank you for voting!</h1>
+          <h3>Here are the top 3 projects right now</h3>
+          <Box sx={{ borderBottom: 1, borderColor: "divider" }}></Box>
+          <Box
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              margin: "50px",
+            }}
+          >
+            <Grid container spacing={4}>
+              {!topThree?.length
+                ? "No Teams available at this time"
+                : topThree.map((team) => {
                     return (
                       <div
                         style={{
                           display: "flex",
                           margin: "20px",
                         }}
-                        key={team.id}
                       >
-                        <Card id="cardProject" sx={{ maxWidth: 345 }}>
+                        <Card id="cardProjectFinal" sx={{ maxWidth: 345 }}>
                           <CardHeader title={team.name} />
                           <CardActions disableSpacing>
                             <IconButton
-                              id={team.id}
-                              // disabled={numVotes === 0}
+                              disabled={true}
                               aria-label="Vote"
                               onClick={(e) => handleVote(e)}
                             >
-                              Vote
+                              Votes: {team.votes}
                             </IconButton>
                           </CardActions>
                         </Card>
                       </div>
                     );
-                  }
-                })}
-          </Grid>
-        </Box>
-        <Button
-          // disabled={numVotes !== 0}
-          variant="contained"
-          onClick={() => handleSubmit()}
-        >
-          Submit
-        </Button>
-      </div>
-    );
+                  })}
+            </Grid>
+          </Box>
+        </div>
+      );
+    } else {
+      return (
+        <div className="App">
+          <div className="titleHeader">
+            <h1 id="title" style={{ color: "white" }}>
+              Modern Marvels Voting
+            </h1>
+            <h2 id="sponsortitle" style={{ color: "white" }}>
+              Sponsored by NFTicket
+            </h2>
+          </div>
+          <h2 id="aboutSection">
+            {" "}
+            Vote for the top 3 projects and then hit Submit. Each vote is worth
+            1 point.
+          </h2>
+
+          <h1 id="votesRemaining">
+            Votes Remaining: {numVotes ? numVotes : "0"}{" "}
+          </h1>
+
+          <Box sx={{ borderBottom: 1, borderColor: "divider" }}></Box>
+          <Box
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              margin: "50px",
+            }}
+          >
+            <Grid container spacing={4}>
+              {!displayList?.length
+                ? "No Teams available at this time"
+                : displayList.map((team) => {
+                    if (team !== null) {
+                      return (
+                        <div
+                          style={{
+                            display: "flex",
+                            margin: "20px",
+                          }}
+                          key={team.id}
+                        >
+                          <Card id="cardProject" sx={{ maxWidth: 345 }}>
+                            <CardHeader title={team.name} />
+                            <CardActions disableSpacing>
+                              <IconButton
+                                id={team.id}
+                                // disabled={numVotes === 0}
+                                aria-label="Vote"
+                                onClick={(e) => handleVote(e)}
+                              >
+                                Vote
+                              </IconButton>
+                            </CardActions>
+                          </Card>
+                        </div>
+                      );
+                    }
+                  })}
+            </Grid>
+          </Box>
+          <Button
+            // disabled={numVotes !== 0}
+            variant="contained"
+            onClick={() => handleSubmit()}
+          >
+            Submit
+          </Button>
+        </div>
+      );
+    }
   }
 }
 
