@@ -198,28 +198,28 @@ function App() {
               {!topThree?.length
                 ? "No Teams available at this time"
                 : topThree.map((team) => {
-                    return (
-                      <div
-                        style={{
-                          display: "flex",
-                          margin: "20px",
-                        }}
-                      >
-                        <Card id="cardProjectFinal" sx={{ maxWidth: 345 }}>
-                          <CardHeader title={team.name} />
-                          <CardActions disableSpacing>
-                            <IconButton
-                              disabled={true}
-                              aria-label="Vote"
-                              onClick={(e) => handleVote(e)}
-                            >
-                              Votes: {team.votes}
-                            </IconButton>
-                          </CardActions>
-                        </Card>
-                      </div>
-                    );
-                  })}
+                  return (
+                    <div
+                      style={{
+                        display: "flex",
+                        margin: "20px",
+                      }}
+                    >
+                      <Card id="cardProjectFinal" sx={{ maxWidth: 345 }}>
+                        <CardHeader title={team.name} />
+                        <CardActions disableSpacing>
+                          <IconButton
+                            disabled={true}
+                            aria-label="Vote"
+                            onClick={(e) => handleVote(e)}
+                          >
+                            Votes: {team.votes}
+                          </IconButton>
+                        </CardActions>
+                      </Card>
+                    </div>
+                  );
+                })}
             </Grid>
           </Box>
         </div>
@@ -232,7 +232,7 @@ function App() {
               Modern Marvels Voting
             </h1>
             <h2 id="sponsortitle" style={{ color: "white" }}>
-              Sponsored by NFTicket
+              Created by NFTicket
             </h2>
           </div>
           <h2 id="aboutSection">
@@ -245,7 +245,7 @@ function App() {
             Votes Remaining: {numVotes ? numVotes : "0"}{" "}
           </h1>
 
-          
+
 
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}></Box>
           <Box
@@ -259,70 +259,70 @@ function App() {
               {!displayList?.length
                 ? "No Teams available at this time"
                 : displayList.map((team) => {
-                    if (team !== null) {
-                      return (
-                        <div
+                  if (team !== null) {
+                    return (
+                      <div
+                        style={{
+                          display: "flex",
+                          margin: "20px",
+                        }}
+                        key={team.id}
+                      >
+                        <Card
+                          id={team.id}
+                          sx={{ maxWidth: 345 }}
                           style={{
+                            backgroundColor: "grey",
+                            borderRadius: "25px",
+                            opacity: 0.8,
+                            minHeight: "20vh",
+                            width: "400px",
                             display: "flex",
-                            margin: "20px",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontFamily: "times new roman",
+                            color: "white",
+                            fontSize: "20px",
                           }}
-                          key={team.id}
                         >
-                          <Card
-                            id={team.id}
-                            sx={{ maxWidth: 345 }}
-                            style={{
-                              backgroundColor: "grey",
-                              borderRadius: "25px",
-                              opacity: 0.8,
-                              minHeight: "20vh",
-                              width: "400px",
-                              display: "flex",
-                              flexDirection: "column",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              fontFamily: "times new roman",
-                              color: "white",
-                              fontSize: "20px",
-                            }}
+                          <Typography
+                            sx={{ fontSize: 14, color: "white" }}
+                            color="text.secondary"
+                            gutterBottom
                           >
-                            <Typography
-                              sx={{ fontSize: 14, color: "white" }}
-                              color="text.secondary"
-                              gutterBottom
+                            {team.name} (Team {team.id})
+                          </Typography>
+                          <CardHeader title={team.projName} />
+                          <Typography
+                            sx={{ mb: 1.5, color: "white" }}
+                            color="text.secondary"
+                          >
+                            {team.members}
+                          </Typography>
+                          <CardActions disableSpacing>
+                            <IconButton
+                              id={team.id}
+                              // disabled={numVotes === 0}
+                              aria-label="Vote"
+                              onClick={(e) => handleVote(e)}
                             >
-                              {team.name} (Team {team.id})
-                            </Typography>
-                            <CardHeader title={team.projName} />
-                            <Typography
-                              sx={{ mb: 1.5, color: "white" }}
-                              color="text.secondary"
-                            >
-                              {team.members}
-                            </Typography>
-                            <CardActions disableSpacing>
-                              <IconButton
-                                id={team.id}
-                                // disabled={numVotes === 0}
-                                aria-label="Vote"
-                                onClick={(e) => handleVote(e)}
-                              >
-                                Vote
-                              </IconButton>
-                            </CardActions>
-                          </Card>
-                        </div>
-                      );
-                    }
-                  })}
+                              Vote
+                            </IconButton>
+                          </CardActions>
+                        </Card>
+                      </div>
+                    );
+                  }
+                })}
             </Grid>
           </Box>
 
-                  
+
           <Button
             // disabled={numVotes !== 0}
             variant="contained"
-            id= "submitButton"
+            id="submitButton"
             onClick={() => handleSubmit()}
           >
             Submit
