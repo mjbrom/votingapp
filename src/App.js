@@ -245,6 +245,8 @@ function App() {
             Votes Remaining: {numVotes ? numVotes : "0"}{" "}
           </h1>
 
+          
+
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}></Box>
           <Box
             style={{
@@ -315,9 +317,12 @@ function App() {
                   })}
             </Grid>
           </Box>
+
+                  
           <Button
             // disabled={numVotes !== 0}
             variant="contained"
+            id= "submitButton"
             onClick={() => handleSubmit()}
           >
             Submit
