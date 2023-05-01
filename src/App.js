@@ -103,17 +103,20 @@ function App() {
   const handleVote = async (e) => {
     if (numVotes > 0 || e.target.innerText === "Unvote") {
       let newList = JSON.parse(JSON.stringify(displayList));
-      console.log(newList);
+      console.log(e);
       newList.map(async (team) => {
         if (team.id == e.target.id) {
           if (e.target.innerText === "Unvote") {
             team.votes -= 1;
             setNumVotes(numVotes + 1);
             e.target.innerText = "Vote";
+            document.getElementById(e.target.id).style.backgroundColor = "grey";
           } else {
             team.votes += 1;
             setNumVotes(numVotes - 1);
             e.target.innerText = "Unvote";
+            document.getElementById(e.target.id).style.backgroundColor =
+              "green";
           }
           // if (numVotes === 1) {
           //   team.votes += 1;
@@ -203,7 +206,7 @@ function App() {
                         }}
                       >
                         <Card id="cardProjectFinal" sx={{ maxWidth: 345 }}>
-                          <CardHeader title={team.projName} />
+                          <CardHeader title={team.name} />
                           <CardActions disableSpacing>
                             <IconButton
                               disabled={true}
@@ -263,14 +266,31 @@ function App() {
                           }}
                           key={team.id}
                         >
-                          <Card id="cardProject" sx={{ maxWidth: 345 }}>
-                            {/* <Typography
+                          <Card
+                            id={team.id}
+                            sx={{ maxWidth: 345 }}
+                            style={{
+                              backgroundColor: "grey",
+                              borderRadius: "25px",
+                              opacity: 0.8,
+                              minHeight: "20vh",
+                              width: "400px",
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontFamily: "times new roman",
+                              color: "white",
+                              fontSize: "20px",
+                            }}
+                          >
+                            <Typography
                               sx={{ fontSize: 14, color: "white" }}
                               color="text.secondary"
                               gutterBottom
                             >
-                              {team.name}
-                            </Typography> */}
+                              {team.name} (Team {team.id})
+                            </Typography>
                             <CardHeader title={team.projName} />
                             <Typography
                               sx={{ mb: 1.5, color: "white" }}
