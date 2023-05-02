@@ -194,7 +194,7 @@ function App() {
               margin: "50px",
             }}
           >
-            <Grid container spacing={4}>
+            <Grid id="mainGrid" container spacing={4}>
               {!topThree?.length
                 ? "No Teams available at this time"
                 : topThree.map((team) => {
