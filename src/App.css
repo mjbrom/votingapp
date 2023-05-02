@@ -101,6 +101,11 @@
   font-family: "times new roman";
 }
 
+#mainGrid {
+  align-items: center;
+  justify-content: center;
+}
+
 .App-link {
   color: #61dafb;
 }

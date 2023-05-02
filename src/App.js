@@ -24,26 +24,30 @@ function App() {
   useEffect(() => {
     const getUsedIP = async () => {
       const dbRef = ref(database);
-      let result;
-      await get(child(dbRef, `ipStorage`)).then((snapshot) => {
+      let ipVal = await getIPv6();
+      console.log(ipVal);
+      await get(child(dbRef, `ipStorage/`)).then((snapshot) => {
         if (snapshot.exists()) {
           console.log(snapshot.val());
-          result = snapshot.val();
+          console.log(Object.values(snapshot.val()));
+          if (Object.values(snapshot.val()).indexOf(ipVal) > -1) {
+            setHasVoted(true);
+          }
         } else {
           console.log("No Data");
         }
       });
-      console.log(result);
-      return result;
+      // console.log(result);
+      // return result;
     };
     const fetchData = async () => {
       const data = await getTeams();
       setDisplayList(data);
     };
     const getIPv6 = async function (req, res, next) {
-      axios.get("https://ipapi.co/json/").then(async (res) => {
-        let ipList = await getUsedIP();
-        console.log(ipList);
+      return axios.get("https://ipapi.co/json/").then(async (res) => {
+        // let ipList = await getUsedIP();
+        // console.log(ipList);
         setRawIP(res.data.ip);
         let newIP = res.data.ip;
         newIP = newIP.split(".").join("");
@@ -51,21 +55,24 @@ function App() {
         newIP = newIP.split("$").join("");
         newIP = newIP.split("[").join("");
         newIP = newIP.split("]").join("");
-        for (const val in ipList) {
-          if (val === res.data.ip) {
-            setHasVoted(true);
-          }
-        }
+
+        // for (const val in ipList) {
+        //   console.log(val.ipVal);
+        //   if (val.ipVal === res.data.ip) {
+        //     setHasVoted(true);
+        //   }
+        // }
         setIpDetails(newIP);
         // const dbRef = ref(database, "ipStorage/" + newIP);
         // set(dbRef, {
         //   ipVal: res.data.ip,
         // });
         console.log(res.data);
+        return res.data.ip;
       });
     };
     // getUsedIP();
-    getIPv6();
+    getUsedIP();
     fetchData();
   }, []);
 
@@ -90,9 +97,7 @@ function App() {
     const dbRef = ref(database);
     const updates = {};
     const ipDbRef = ref(database, "ipStorage/" + ipDetails);
-    set(ipDbRef, {
-      ipVal: rawIP,
-    });
+    set(ipDbRef, rawIP);
     displayList.map(async (team) => {
       updates[`teamInfo/${team.id}/votes`] = team.votes;
       await update(dbRef, updates);
@@ -105,6 +110,7 @@ function App() {
       let newList = JSON.parse(JSON.stringify(displayList));
       console.log(e);
       newList.map(async (team) => {
+        // eslint-disable-next-line eqeqeq
         if (team.id == e.target.id) {
           if (e.target.innerText === "Unvote") {
             team.votes -= 1;
@@ -118,30 +124,13 @@ function App() {
             document.getElementById(e.target.id).style.backgroundColor =
               "green";
           }
-          // if (numVotes === 1) {
-          //   team.votes += 1;
-          // } else {
-          //   team.votes += numVotes;
-          // }
-          // updates[`teamInfo/${team.id}/votes`] = team.votes;
-          // await update(dbRef, updates);
         }
       });
       setDisplayList(newList);
-
-      // if (numVotes === 1) {
-      //   setTopThree(getTopThree(newList));
-      // }
     }
   };
 
   const getTopThree = (newList) => {
-    // let teams;
-    // const fetchData = async () => {
-    //   teams = await getTeams();
-    // };
-    // fetchData();
-    // console.log(teams);
     let first = Number.MIN_VALUE;
     let firstName = "";
     let second = Number.MIN_VALUE;
@@ -253,7 +242,7 @@ function App() {
               margin: "50px",
             }}
           >
-            <Grid container spacing={4}>
+            <Grid id="mainGrid" container spacing={4}>
               {!displayList?.length
                 ? "No Teams available at this time"
                 : displayList.map((team) => {
@@ -312,11 +301,12 @@ function App() {
                         </div>
                       );
                     }
+                    return null;
                   })}
             </Grid>
           </Box>
           <Button
-            // disabled={numVotes !== 0}
+            disabled={numVotes !== 0}
             variant="contained"
             onClick={() => handleSubmit()}
           >
