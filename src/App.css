@@ -106,6 +106,19 @@
   justify-content: center;
 }
 
+#submitButton {
+  background-color: #972224;
+  border-radius: 25px;
+  opacity: 0.8;
+  min-height: 5vh;
+  width: 200px;
+  margin-bottom: 20px;
+  font-family: "times new roman";
+  color: white;
+  font-size: 20px;
+  font-family: "times new roman";
+}
+
 .App-link {
   color: #61dafb;
 }

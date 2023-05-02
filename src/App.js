@@ -183,7 +183,7 @@ function App() {
               margin: "50px",
             }}
           >
-            <Grid container spacing={4}>
+            <Grid id="mainGrid" container spacing={4}>
               {!topThree?.length
                 ? "No Teams available at this time"
                 : topThree.map((team) => {
@@ -221,7 +221,7 @@ function App() {
               Modern Marvels Voting
             </h1>
             <h2 id="sponsortitle" style={{ color: "white" }}>
-              Sponsored by NFTicket
+              Created by NFTicket
             </h2>
           </div>
           <h2 id="aboutSection">
@@ -305,9 +305,11 @@ function App() {
                   })}
             </Grid>
           </Box>
+
           <Button
             disabled={numVotes !== 0}
             variant="contained"
+            id="submitButton"
             onClick={() => handleSubmit()}
           >
             Submit
