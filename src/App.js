@@ -25,11 +25,8 @@ function App() {
     const getUsedIP = async () => {
       const dbRef = ref(database);
       let ipVal = await getIPv6();
-      console.log(ipVal);
       await get(child(dbRef, `ipStorage/`)).then((snapshot) => {
         if (snapshot.exists()) {
-          console.log(snapshot.val());
-          console.log(Object.values(snapshot.val()));
           if (Object.values(snapshot.val()).indexOf(ipVal) > -1) {
             setHasVoted(true);
           }
@@ -55,18 +52,7 @@ function App() {
         newIP = newIP.split("$").join("");
         newIP = newIP.split("[").join("");
         newIP = newIP.split("]").join("");
-
-        // for (const val in ipList) {
-        //   console.log(val.ipVal);
-        //   if (val.ipVal === res.data.ip) {
-        //     setHasVoted(true);
-        //   }
-        // }
         setIpDetails(newIP);
-        // const dbRef = ref(database, "ipStorage/" + newIP);
-        // set(dbRef, {
-        //   ipVal: res.data.ip,
-        // });
         console.log(res.data);
         return res.data.ip;
       });
