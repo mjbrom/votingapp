@@ -150,13 +150,20 @@ function App() {
   if (hasVoted === true) {
     return (
       <div>
-        <h1>You have already voted!</h1>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            height: "100%",
+          }}
+        >
+          <h1>Thank you for voting!</h1>
+        </div>
+        <img src={require("./nonono2.gif")} alt="loading..." />
       </div>
     );
   } else {
     if (submitClicked === true) {
-      console.log(topThree);
-
       return (
         <div className="App-header">
           <h1>Thank you for voting!</h1>
