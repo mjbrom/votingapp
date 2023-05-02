@@ -20,6 +20,7 @@ function App() {
   const [hasVoted, setHasVoted] = useState(false);
   const [ipDetails, setIpDetails] = useState("");
   const [rawIP, setRawIP] = useState("");
+  const [checkHasVoted, setCheckHasVoted] = useState(false);
 
   useEffect(() => {
     const getUsedIP = async () => {
@@ -79,16 +80,21 @@ function App() {
   };
 
   const handleSubmit = async (e) => {
-    setSubmitClicked(true);
-    const dbRef = ref(database);
-    const updates = {};
-    const ipDbRef = ref(database, "ipStorage/" + ipDetails);
-    set(ipDbRef, rawIP);
-    displayList.map(async (team) => {
-      updates[`teamInfo/${team.id}/votes`] = team.votes;
-      await update(dbRef, updates);
-    });
-    setTopThree(getTopThree(displayList));
+    if (hasVoted === true) {
+      setCheckHasVoted(true);
+      return null;
+    } else {
+      setSubmitClicked(true);
+      const dbRef = ref(database);
+      const updates = {};
+      const ipDbRef = ref(database, "ipStorage/" + ipDetails);
+      set(ipDbRef, rawIP);
+      displayList.map(async (team) => {
+        updates[`teamInfo/${team.id}/votes`] = team.votes;
+        await update(dbRef, updates);
+      });
+      setTopThree(getTopThree(displayList));
+    }
   };
 
   const handleVote = async (e) => {
@@ -147,18 +153,20 @@ function App() {
       { name: thirdName, votes: third },
     ];
   };
-  if (hasVoted === true) {
+  if (checkHasVoted === true) {
     return (
-      <div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            height: "100%",
-          }}
-        >
-          <h1>Thank you for voting!</h1>
+      <div
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      >
+        <div>
+          <h1>No Voting Twice!</h1>
         </div>
+
         <img src={require("./nonono2.gif")} alt="loading..." />
       </div>
     );
