@@ -101,6 +101,12 @@
   font-family: "times new roman";
 }
 
+#mainGrid {
+  align-items: center;
+  justify-content: center;
+   
+}
+
 #submitButton{
   background-color: #972224;
   border-radius: 25px;

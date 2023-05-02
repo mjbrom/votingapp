@@ -255,7 +255,7 @@ function App() {
               margin: "50px",
             }}
           >
-            <Grid container spacing={4}>
+            <Grid id="mainGrid" container spacing={4}>
               {!displayList?.length
                 ? "No Teams available at this time"
                 : displayList.map((team) => {
